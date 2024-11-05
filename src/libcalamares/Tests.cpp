@@ -32,6 +32,7 @@ private Q_SLOTS:
     void testGSLoadSave();
     void testGSLoadSave2();
     void testGSLoadSaveYAMLStringList();
+    void testGSNestedLookup();
 
     void testInstanceKey();
     void testInstanceDescription();
@@ -175,6 +176,38 @@ TestLibCalamares::testGSLoadSaveYAMLStringList()
     QEXPECT_FAIL( "", "QStringList doesn't write out nicely", Continue );
     QCOMPARE( gs2.value( "dwarfs" ).toList().count(), 7 );  // There's seven dwarfs, right?
     QCOMPARE( gs2.value( "dwarfs" ).toString(), QStringLiteral( "<QStringList>" ) );  // .. they're gone
+}
+
+void
+TestLibCalamares::testGSNestedLookup()
+{
+    Logger::setupLogLevel( Logger::LOGDEBUG );
+
+    const QString filename( BUILD_AS_TEST "/testdata/yaml-list.conf" );
+    QVERIFY2( QFile::exists( filename ), qPrintable( filename ) );
+
+    Calamares::GlobalStorage gs2;
+    QVERIFY( gs2.loadYaml( filename ) );
+
+    bool ok = false;
+    const auto v0 = Calamares::lookup( &gs2, "horse.colors.neck", ok );
+    QVERIFY( ok );
+    QVERIFY( v0.canConvert< QString >() );
+    QCOMPARE( v0.toString(), QStringLiteral( "roan" ) );
+    const auto v1 = Calamares::lookup( &gs2, "horse.colors.nose", ok );
+    QVERIFY( !ok );
+    QVERIFY( !v1.isValid() );
+    const auto v2 = Calamares::lookup( &gs2, "cow.colors.nose", ok );
+    QVERIFY( !ok );
+    QVERIFY( !v2.isValid() );
+    const auto v3 = Calamares::lookup( &gs2, "dwarfs", ok );
+    QVERIFY( ok );
+    QVERIFY( v3.canConvert< QVariantList >() );  // because it's a list-valued thing
+    const auto v4 = Calamares::lookup( &gs2, "dwarfs.sleepy", ok );
+    QVERIFY( !ok );  // Sleepy is a value in the list of dwarfs, not a key
+    const auto v5 = Calamares::lookup( &gs2, "derp", ok );
+    QVERIFY( ok );
+    QCOMPARE( v5.toInt(), 17 );
 }
 
 void
