@@ -10,13 +10,17 @@ the history of the 3.2 series (2018-05 - 2022-08).
 # 3.3.11 (unreleased)
 
 This release contains contributions from (alphabetically by given name):
- - Nobody yet
+ - Jakob Petsovits
+ - Simon Quigley
 
 ## Core ##
  - Nothing yet
 
 ## Modules ##
- - Nothing yet
+ - *unpackfs* now supports a `condition` configuration option for
+   conditional installation / unsquash. (thanks Simon)
+ - *partition* crash fixed when swap was using the wrong end-sector
+   in some GPT configurations. (thanks Jakob, #2367)
 
 
 # 3.3.10 (2024-10-21)
