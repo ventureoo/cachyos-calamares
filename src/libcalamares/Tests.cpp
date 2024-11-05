@@ -127,17 +127,14 @@ TestLibCalamares::testGSLoadSave2()
 {
     Logger::setupLogLevel( Logger::LOGDEBUG );
 
-    const QString filename( "../src/libcalamares/testdata/yaml-list.conf" );
-    if ( !QFile::exists( filename ) )
-    {
-        return;
-    }
+    const QString filename( BUILD_AS_TEST "/testdata/yaml-list.conf" );
+    QVERIFY2( QFile::exists( filename ), qPrintable( filename ) );
 
     Calamares::GlobalStorage gs1;
     const QString key( "dwarfs" );
 
     QVERIFY( gs1.loadYaml( filename ) );
-    QCOMPARE( gs1.count(), 3 );  // From examining the file
+    QCOMPARE( gs1.count(), 4 );  // From examining the file
     QVERIFY( gs1.contains( key ) );
     cDebug() << Calamares::typeOf( gs1.value( key ) ) << gs1.value( key );
     QCOMPARE( Calamares::typeOf( gs1.value( key ) ), Calamares::ListVariantType );
