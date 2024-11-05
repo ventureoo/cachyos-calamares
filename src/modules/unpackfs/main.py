@@ -48,7 +48,7 @@ class UnpackEntry:
     :param destination:
     """
     __slots__ = ('source', 'sourcefs', 'destination', 'copied', 'total', 'exclude', 'excludeFile',
-                 'mountPoint', 'weight', 'include')
+                 'mountPoint', 'weight', 'condition')
 
     def __init__(self, source, sourcefs, destination):
         """
@@ -71,7 +71,7 @@ class UnpackEntry:
         self.total = 0
         self.mountPoint = None
         self.weight = 1
-        self.include = True
+        self.condition = True
 
     def is_file(self):
         return self.sourcefs == "file"
@@ -487,26 +487,26 @@ def run():
         sourcefs = entry["sourcefs"]
         destination = os.path.abspath(root_mount_point + entry["destination"])
 
-        include = entry.get("include", True)
-        if isinstance(include, bool):
-            pass  # 'include' is already True or False
-        elif isinstance(include, str):
-            keys = include.split(".")
+        condition = entry.get("condition", True)
+        if isinstance(condition, bool):
+            pass  # 'condition' is already True or False
+        elif isinstance(condition, str):
+            keys = condition.split(".")
             gs_value = fetch_from_globalstorage(keys)
             if gs_value is None:
-                libcalamares.utils.warning("Include key '{}' not found in global storage, assuming False".format(include))
-                include = False
+                libcalamares.utils.warning("Condition key '{}' not found in global storage, assuming False".format(condition))
+                condition = False
             elif isinstance(gs_value, bool):
-                include = gs_value
+                condition = gs_value
             else:
-                libcalamares.utils.warning("Include key '{}' is not a boolean, assuming True".format(include))
-                include = True
+                libcalamares.utils.warning("Condition key '{}' is not a boolean, assuming True".format(condition))
+                condition = True
         else:
-            libcalamares.utils.warning("Invalid 'include' value '{}', assuming True".format(include))
-            include = True
+            libcalamares.utils.warning("Invalid 'condition' value '{}', assuming True".format(condition))
+            condition = True
 
-        if not include:
-            libcalamares.utils.debug("Skipping unpack of {} due to 'include' being False".format(source))
+        if not condition:
+            libcalamares.utils.debug("Skipping unpack of {} due to 'condition' being False".format(source))
             continue
 
         if not os.path.isdir(destination) and sourcefs != "file":
