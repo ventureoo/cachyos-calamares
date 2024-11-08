@@ -527,6 +527,7 @@ UserTests::testUserUmask_data()
     QTest::newRow( "-wrd " ) << "tests/8e-issue-2362.conf" << 0214 << 0563;
     QTest::newRow( "bogus" ) << "tests/8f-issue-2362.conf" << -1 << -1;
     QTest::newRow( "good2" ) << "tests/8g-issue-2362.conf" << 0750 << 0027;
+    QTest::newRow( "numrc" ) << "tests/8h-issue-2362.conf" << 0751 << 0026;
 }
 
 void
