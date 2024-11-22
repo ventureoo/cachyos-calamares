@@ -35,15 +35,22 @@ def run_dracut():
 
     :return:
     """
+    # Fetch the job configuration
+    cli_options = ["-f"]
+    initramfs_name = libcalamares.job.configuration.get('initramfsName', None)
+    dracut_options = libcalamares.job.configuration.get('options', [])
+
+    # Parse the custom options if there are any
+    for option in dracut_options:
+        # Deduplication check
+        if option not in cli_options:
+            cli_options.append(option)
+
+    if initramfs_name:
+        cli_options.append(initramfs_name)
+
     try:
-        initramfs_name = libcalamares.job.configuration['initramfsName']
-        target_env_process_output(['dracut', '-f', initramfs_name])
-    except KeyError:
-        try:
-            target_env_process_output(['dracut', '-f'])
-        except subprocess.CalledProcessError as cpe:
-            libcalamares.utils.warning(f"Dracut failed with output: {cpe.output}")
-            return cpe.returncode
+        target_env_process_output(['dracut'] + cli_options)
     except subprocess.CalledProcessError as cpe:
         libcalamares.utils.warning(f"Dracut failed with output: {cpe.output}")
         return cpe.returncode
