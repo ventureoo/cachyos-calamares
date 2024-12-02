@@ -41,9 +41,15 @@ FinishedPage::FinishedPage( Config* config, QWidget* parent )
                  ui->restartCheckBox->setEnabled( mode != Mode::Always );
              } );
     connect( config, &Config::restartNowWantedChanged, ui->restartCheckBox, &QCheckBox::setChecked );
+#if QT_VERSION < QT_VERSION_CHECK( 6, 7, 0 )
     connect( ui->restartCheckBox,
              &QCheckBox::stateChanged,
              [ config ]( int state ) { config->setRestartNowWanted( state != 0 ); } );
+#else
+    connect( ui->restartCheckBox,
+             &QCheckBox::checkStateChanged,
+             [ config ]( Qt::CheckState state ) { config->setRestartNowWanted( state != Qt::Unchecked ); } );
+#endif
 
     CALAMARES_RETRANSLATE_SLOT( &FinishedPage::retranslate );
 }
