@@ -547,12 +547,14 @@ PartitionPage::updateBootLoaderInstallPath()
 {
     if ( m_isEfi || !m_ui->bootLoaderComboBox->isVisible() )
     {
+        cDebug() << "PartitionPage::updateBootLoaderInstallPath there is no combo box";
         return;
     }
 
     QVariant var = m_ui->bootLoaderComboBox->currentData( BootLoaderModel::BootLoaderPathRole );
     if ( !var.isValid() )
     {
+        cDebug() << "PartitionPage::updateBootLoaderInstallPath is not valid";
         return;
     }
     cDebug() << "PartitionPage::updateBootLoaderInstallPath" << var.toString();
@@ -570,6 +572,7 @@ void
 PartitionPage::restoreSelectedBootLoader()
 {
     Calamares::restoreSelectedBootLoader( *( m_ui->bootLoaderComboBox ), m_core->bootLoaderInstallPath() );
+    updateBootLoaderInstallPath();
 }
 
 void
@@ -657,7 +660,7 @@ PartitionPage::updateBootLoaderIndex()
     // set bootloader back to user selected index
     if ( m_lastSelectedBootLoaderIndex >= 0 && m_ui->bootLoaderComboBox->count() )
     {
-        m_ui->bootLoaderComboBox->setCurrentIndex( m_lastSelectedBootLoaderIndex );
+            m_ui->bootLoaderComboBox->setCurrentIndex( m_lastSelectedBootLoaderIndex );
     }
 }
 
