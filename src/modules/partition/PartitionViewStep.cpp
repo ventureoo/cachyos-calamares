@@ -795,7 +795,7 @@ PartitionViewStep::onLeave()
 
             cDebug() << "device: BIOS";
 
-            if ( shouldWarnForGPTOnBIOS( m_core ) )
+            if ( false )
             {
                 const QString biosFlagName = PartitionTable::flagName( KPM_PARTITION_FLAG( BiosGrub ) );
                 QString message = tr( "Option to use GPT on BIOS" );
