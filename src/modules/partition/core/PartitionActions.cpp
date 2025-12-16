@@ -123,7 +123,9 @@ doAutopartition( PartitionCoreModule* core, Device* dev, Choices::AutoPartitionO
 
     core->createPartitionTable( dev, partType );
 
-    if (true)
+    const auto bootloader = gs->value( "packagechooser_bootloader" ).toString();
+
+    if ( createHybridBootloaderLayout || isEfi || bootloader == "limine" )
     {
         qint64 uefisys_part_sizeB = PartUtils::efiFilesystemRecommendedSize();
         qint64 efiSectorCount = Calamares::bytesToSectors( uefisys_part_sizeB, dev->logicalSize() );
@@ -150,7 +152,7 @@ doAutopartition( PartitionCoreModule* core, Device* dev, Choices::AutoPartitionO
         core->createPartition( dev, efiPartition, KPM_PARTITION_FLAG_ESP );
         firstFreeSector = lastSector + 1;
 
-        if ( createHybridBootloaderLayout || !isEfi)
+        if ( createHybridBootloaderLayout || ( bootloader == "limine" && !isEfi ) )
         {
             qint64 bios_part_sizeB = 8_MiB;
             qint64 biosSectorCount = Calamares::bytesToSectors( bios_part_sizeB, dev->logicalSize() );
