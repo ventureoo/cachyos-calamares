@@ -368,6 +368,14 @@ ZfsJob::setConfigurationMap( const QVariantMap& map )
     m_poolOptions = Calamares::getString( map, "poolOptions" );
     m_datasetOptions = Calamares::getString( map, "datasetOptions" );
 
+    Calamares::GlobalStorage* gs = Calamares::JobQueue::instance()->globalStorage();
+    const auto bootloader = gs->value( "packagechooser_bootloader" ).toString();
+
+    if (bootloader == "grub")
+    {
+        m_poolOptions.append( " -o compatibility=grub2" );
+    }
+
     m_datasets = Calamares::getList( map, "datasets" );
 }
 
