@@ -825,6 +825,7 @@ def install_limine(efi_directory, fw_type):
     update_limine_config(efi_directory, installation_root_path, fw_type)
     add_additional_entries_limine(efi_directory, installation_root_path, fw_type)
 
+    show_broken_uefi_warning()
     if fw_type == "efi":
         libcalamares.utils.debug("Bootloader: limine (efi)")
 
